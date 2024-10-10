@@ -66,7 +66,7 @@ export default function Catalogo() {
           src="/img/logo.png"
           alt="logo del negocio"
           width={170}
-          height={100}
+          height={170}
         />
       </div>
 
