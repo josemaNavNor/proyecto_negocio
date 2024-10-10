@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styles from '../styles/Home.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
-import Modal from './modal';
+import Modal from '../components/modal';
 import Layout from '../components/layout';
 
 export default function Catalogo() {
