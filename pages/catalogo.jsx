@@ -13,9 +13,9 @@ export default function Catalogo() {
 
   const products = [
     { id: 1, name: 'Producto 1', price: '50.00', image: '/img/products/p1.jpeg' },
-    { id: 2, name: 'Producto 2', price: '15.00', image: '/img/products/p2.jpeg' },
-    { id: 3, name: 'Producto 3', price: '12.00', image: '/img/products/p3.jpeg' },
-    { id: 4, name: 'Producto 4', price: '20.00', image: '/img/products/p4.jpeg' }
+    { id: 2, name: 'Producto 2', price: '155.00', image: '/img/products/p2.jpeg' },
+    { id: 3, name: 'Producto 3', price: '1255.00', image: '/img/products/p3.jpeg' },
+    { id: 4, name: 'Producto 4', price: '20555.00', image: '/img/products/p4.jpeg' }
   ];  // Lista de producto
 
   const nextSlide = () => {
