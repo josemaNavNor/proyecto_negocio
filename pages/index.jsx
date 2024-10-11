@@ -38,10 +38,10 @@ export default function Catalogo() {
   return (
     <div className={styles.body}>
       <Layout
-        title="Catalogo"
-        description="Pagina principal"
+        title="Catálogo"
+        description="Página principal del catálogo"
+        icon="/img/icon.ico" // Cambia esta ruta si es necesario
       >
-        {/* Puedes incluir el contenido del Layout aquí si es necesario */}
       </Layout>
 
       <div className={styles.info}>
