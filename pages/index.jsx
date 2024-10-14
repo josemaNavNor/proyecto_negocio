@@ -3,7 +3,7 @@ import styles from '../styles/Home.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import Modal from '../components/modal';
-import Layout from '../components/layout';
+import Layout from '../components/layout-header';
 
 export default function Catalogo() {
   const images = ['/img/slide1.jpeg', '/img/slide2.jpeg', '/img/slide3.jpeg']; // Rutas de las imágenes del carrusel
