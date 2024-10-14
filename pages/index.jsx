@@ -71,7 +71,7 @@ export default function Catalogo() {
       </div>
 
       <div className={styles.nav}>
-        {['Invitaciones', 'Souvenirs', 'Papelería', 'Creativa', 'Recuerdos'].map((item, index) => (
+        {['Invitaciones', 'Souvenirs', 'Papeleria', 'Creativa', 'Recuerdos'].map((item, index) => (
           <Link href={`/${item.toLowerCase()}`} key={index} className={styles.navItem}>
             <strong>{item}</strong>
           </Link>
