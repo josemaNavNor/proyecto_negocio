@@ -8,23 +8,23 @@ export default function Invitaciones() {
     return (
         <>
             <Layout
-                title="Invitaciones"
-                description="Pagina de invitaciones"
-                icon="/img/icono-invitacion.ico"
+                title="Creativa"
+                description="Pagina de productos creativos"
+                icon="/img/icono-invitacion.ico" 
             >
-
+                
             </Layout>
 
-            <LayoutProducto nombreCategoria="Invitaciones">
+            <LayoutProducto nombreCategoria="Creativa">
                 {/* Contenedor de productos */}
                 <div className={styles.gridContainer}>
                     {/* Cumpleaños */}
                     <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Cumpleaños</h3>
+                        <h3 className={styles.h3}>Cake toppers</h3>
                         <div className={styles.imagenProducto}>
                             <Image
-                                src="/img/invitacion1.jpg"
-                                alt="Cumpleaños"
+                                src="/img/creativa/happy-bithday-baseball.png"
+                                alt="Cake topper"
                                 width={170}
                                 height={200}
                             />
@@ -36,11 +36,11 @@ export default function Invitaciones() {
 
                     {/* Cenas */}
                     <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Cenas</h3>
+                        <h3 className={styles.h3}>Cajitas</h3>
                         <div className={styles.imagenProducto}>
                             <Image
-                                src="/img/invitaciones/happy-xv-pink.png"
-                                alt="Cenas"
+                                src="/img/creativa/cajita.png" 
+                                alt="Cajita"
                                 width={170}
                                 height={200}
                             />
@@ -52,11 +52,11 @@ export default function Invitaciones() {
 
                     {/* Bodas */}
                     <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Bodas</h3>
+                        <h3 className={styles.h3}>Tarjetas</h3>
                         <div className={styles.imagenProducto}>
                             <Image
-                                src="/img/invitaciones/invitacion-black.png"
-                                alt="Bodas"
+                                src="/img/creativa/tarjeta.png" 
+                                alt="Diseños unico"
                                 width={170}
                                 height={200}
                             />
@@ -68,11 +68,11 @@ export default function Invitaciones() {
 
                     {/* Baby Shower */}
                     <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Baby Shower</h3>
+                        <h3 className={styles.h3}>Decoraciones Temáticas</h3>
                         <div className={styles.imagenProducto}>
                             <Image
-                                src="/img/shower.jpg"
-                                alt="Baby Shower"
+                                src="/img/creativa/baseball decoracion.png" 
+                                alt="Decoracion"
                                 width={170}
                                 height={200}
                             />
