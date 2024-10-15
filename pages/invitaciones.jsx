@@ -30,7 +30,7 @@ export default function Invitaciones() {
                             />
                         </div>
                         <Link href="/">
-                            <button className={styles.button}>Ver más</button>
+                            <button className={styles.buttonVerMas}>Ver más</button>
                         </Link>
                     </div>
 
@@ -46,7 +46,7 @@ export default function Invitaciones() {
                             />
                         </div>
                         <Link href="/">
-                            <button className={styles.button}>Ver más</button>
+                            <button className={styles.buttonVerMas}>Ver más</button>
                         </Link>
                     </div>
 
@@ -62,7 +62,7 @@ export default function Invitaciones() {
                             />
                         </div>
                         <Link href="/">
-                            <button className={styles.button}>Ver más</button>
+                            <button className={styles.buttonVerMas}>Ver más</button>
                         </Link>
                     </div>
 
@@ -78,7 +78,7 @@ export default function Invitaciones() {
                             />
                         </div>
                         <Link href="/">
-                            <button className={styles.button}>Ver más</button>
+                            <button className={styles.buttonVerMas}>Ver más</button>
                         </Link>
                     </div>
                 </div>

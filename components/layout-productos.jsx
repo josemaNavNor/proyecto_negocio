@@ -7,7 +7,6 @@ export default function LayoutProducto({ children, nombreCategoria }) {
     return (
         <div className={styles.body}>
             <div className={styles.info}>
-
                 <div className={styles.buttonInicio}>
                     <Link href="/" legacyBehavior>
                         <button className={styles.buttonInicioLink}>
@@ -24,14 +23,13 @@ export default function LayoutProducto({ children, nombreCategoria }) {
                 </div>
 
                 <div className={styles.buttonsGroup}>
-                    {/* <Link href="/">
-      <button className={styles.button}>Volver al inicio</button>
-    </Link> */}
+                    <div className={styles.GridButtonLogin}>
+                        <Link href="/login">
+                            <button className={styles.button}>Iniciar sesión</button>
+                        </Link>
+                    </div>
 
-                    <Link href="/login">
-                        <button className={styles.button}>Iniciar sesión</button>
-                    </Link>
-
+                    <div className={styles.GridButtonCart}>
                     <Link href="/carrito">
                         <button className={styles.button}>
                             <Image
@@ -43,6 +41,8 @@ export default function LayoutProducto({ children, nombreCategoria }) {
                             Mi Carrito
                         </button>
                     </Link>
+                    </div>
+
                 </div>
             </div>
             <div>
@@ -53,7 +53,7 @@ export default function LayoutProducto({ children, nombreCategoria }) {
                 <p className={styles.raya}>‎</p>
             </div>
 
-            <div>{children}</div> {/* Aquí se mostrará el contenido específico de cada página */}
+            <div>{children}</div> 
         </div>
     );
 }

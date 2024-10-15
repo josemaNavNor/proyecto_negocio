@@ -1,102 +1,121 @@
 .body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    height: 100%;
-    overflow-y: auto;
-    /* Permite el scroll vertical */
-    background-color: #f1bdb7;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  height: 100%;
+  background-color: #f4f0f0;
+  font-family: Arial, sans-serif;
 }
 
 /* Responsive Typography */
 .p {
-    font-size: 2vw;
-    /* Texto escalable */
+  font-size: 2vw;
+  /* Texto escalable */
 }
 
 .h1 {
-    text-align: center;
-    font-size: 2.0vw;
-    width: 100%;
+  text-align: center;
+  font-size: 2.0vw;
+  width: 100%;
 }
 
 .h3 {
-    margin-bottom: 0; /* Evita cualquier margen inferior que agregue espacio */
-    color: white;
-}
-
-.button {
-    font-size: 1.5vw;
+  margin-bottom: 0;
+  /* Evita cualquier margen inferior que agregue espacio */
+  color: rgb(0, 0, 0);
 }
 
 /* nuevos cambios al nav */
 .info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px; /* Ajusta el padding si es necesario */
-    position: relative;
-    width: 95%;
-  }
-  
-  .buttonInicio {
-    margin-right: 0%;
-    /* position: absolute; */
-    left: 0;
-    top: 0;
-  }
-  
-  .buttonsGroup {
-    display:flex;
-    justify-content: space-between;
-    gap: 10%; /* Espacio entre los botones */
-  }
-  
-  .buttonInicioLink {
-    display: flex-start;
-    justify-content: center;
-    align-items: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    border-radius: 10px;
-    color: inherit;
-  }
-  .buttonsGroup a {
-    text-decoration: none; /* Elimina el subrayado de los enlaces */
-    color: inherit; /* Hereda el color, o puedes poner un color específico como color: white; */
-  }
-  
-  .button {
-    text-decoration: none;
-    padding: 10px 20px;
-    background-color: plum;
-    border: none;
-    color:white;
-    border-radius: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-  .button a {
-    text-decoration: none; /* Elimina el subrayado de los enlaces */
-    color: inherit; /* Hereda el color, o puedes poner un color específico como color: white; */
-  }
-  
-  .button img {
-    margin-right: 5px;
-    
-  }
-  
-  .buttonInicioLink:hover {
-    transform: scale(1.5); /* Efecto hover de zoom */
-  }
-  
-  .divImage img {
-    border-radius: 10px; /* Borde redondeado en la imagen */
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  /* Ajusta el padding si es necesario */
+  position: relative;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.buttonInicio {
+  margin-right: 0%;
+  /* position: absolute; */
+  left: 0;
+  top: 0;
+}
+
+.buttonsGroup a,
+.contenedor a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.buttonsGroup {
+  width: 20%;
+  display: grid;
+  grid-template-areas: "bt bc";
+  gap: 20px;
+}
+
+.GridButtonLogin {
+  width: 100%;
+  grid-area: bt;
+}
+
+.GridButtonCart {
+  width: 100%;
+  grid-area: bc;
+}
+
+.buttonInicioLink {
+  display: flex-start;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  color: inherit;
+}
+
+.button {
+  padding: 10px 20px;
+  margin: 0 auto;
+  width: 100%;
+  border: 10px 10px 10px;
+  background-color: #E3C4A8;
+  color: rgb(0, 0, 0);
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  text-decoration: none; /* Asegura que el botón no tenga subrayado */
+}
+
+.buttonVerMas {
+  color: rgb(0, 0, 0);
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin: 20px;
+  width: 65%;
+  height: 50%;
+}
+
+.button img {
+  margin-right: 5px;
+
+}
+
+.buttonInicioLink:hover {
+  transform: scale(1.5);
+  /* Efecto hover de zoom */
+}
+
+.divImage img {
+  border-radius: 10px;
+  /* Borde redondeado en la imagen */
+}
+
 
 /* .divImage {
     width: 250px;
@@ -106,32 +125,35 @@
 } */
 
 .raya {
-    background-color: rgb(146, 108, 108);
-    color: rgb(146, 108, 108);
-    height: 2px;
+  background-color: rgb(146, 108, 108);
+  color: rgb(146, 108, 108);
+  height: 2px;
 }
 
-.contenedor{
-    width: 100%;
-    display: flex;                  
-    flex-direction: column;        
-    align-items: center;           
-    background-color: rgb(146, 108, 108);           
-    border-radius: 8px;           
-    box-shadow: 10px 5px 10px; 
-    margin: 20px;                                  
-    text-align: center;            
+.contenedor {
+  text-decoration: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #E3C4A8;
+  border-radius: 8px;
+  box-shadow: 3px 5px 10px;
+  margin: 30%;
+  text-align: center;
 }
 
-.imagenProducto { 
-    margin-bottom: 0px;                    
+.imagenProducto {
+  margin-bottom: 0px;
 }
 
 .gridContainer {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Ajusta el tamaño según sea necesario */
-    gap: 20px; /* Espacio entre los elementos */
-    padding: 20px; /* Espacio interior */
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  /* Ajusta el tamaño según sea necesario */
+  gap: 60px;
+  /* Espacio entre los elementos */
+  padding: 20px;
+  /* Espacio interior */
 }
-
