@@ -1,0 +1,71 @@
+.body {
+    background-image: url('/img/fondologin.png');
+    background-size: cover;
+    /* Esto ajusta la imagen al tamaño del contenedor */
+    height: 80vh;
+    /* Asegura que ocupe toda la pantalla */
+    width: 100vw;
+    /* Asegura que ocupe el ancho completo */
+    padding: 50px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.contenedor {
+    background-color: rgba(113, 117, 120, 0.614);
+    margin: 0 auto;
+    padding: 40px;
+    width: 30%;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.divInputCorreo {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.divInputPass {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.divInputButton {
+    width: 30%;
+    margin: 0 auto;
+}
+
+.inputCorreo, .inputPass {
+    margin-bottom: 10px;
+    width: 100%;
+    
+    padding: 10px 15px;
+    /* Espaciado interno cómodo */
+    border: 1px solid #CCC;
+    /* Borde delgado y claro */
+    border-radius: 5px;
+    /* Bordes ligeramente redondeados */
+    font-size: 16px;
+    /* Tamaño de texto legible */
+    color: #333;
+    /* Texto oscuro */
+    background-color: #FFF;
+    /* Fondo blanco */
+    transition: border-color 0.3s, box-shadow 0.3s;
+    /* Transiciones suaves */
+
+}
+
+.inputButton {
+    background-color: #F0F0F0;
+    color: #333;
+    border: 2px solid #E0E0E0;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 0.9vw;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    margin-left: 10px;
+    /* Margen entre botones */
+    margin-right: 10px;
+    width: 100%;
+}

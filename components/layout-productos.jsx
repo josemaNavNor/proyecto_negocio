@@ -6,30 +6,14 @@ import Image from 'next/image';
 export default function LayoutProducto({ children, nombreCategoria }) {
     return (
         <div className={styles.body}>
-            <div className={styles.info}>
-                <div className={styles.buttonInicio}>
-                    <Link href="/" legacyBehavior>
-                        <button className={styles.buttonInicioLink}>
-                            <div className={styles.divImage}>
-                                <Image
-                                    src="/img/logo.png"
-                                    alt="logo del negocio"
-                                    width={170}
-                                    height={100}
-                                />
-                            </div>
-                        </button>
+            <div className={styles.buttonsGroup}>
+                <div className={styles.GridButtonLogin}>
+                    <Link href="/login">
+                        <button className={styles.button}>Iniciar sesión</button>
                     </Link>
                 </div>
 
-                <div className={styles.buttonsGroup}>
-                    <div className={styles.GridButtonLogin}>
-                        <Link href="/login">
-                            <button className={styles.button}>Iniciar sesión</button>
-                        </Link>
-                    </div>
-
-                    <div className={styles.GridButtonCart}>
+                <div className={styles.GridButtonCart}>
                     <Link href="/carrito">
                         <button className={styles.button}>
                             <Image
@@ -41,9 +25,22 @@ export default function LayoutProducto({ children, nombreCategoria }) {
                             Mi Carrito
                         </button>
                     </Link>
-                    </div>
-
                 </div>
+
+            </div>
+            <div className={styles.buttonInicio}>
+                <Link href="/" legacyBehavior>
+                    <button className={styles.buttonInicioLink}>
+                        <div className={styles.divImage}>
+                            <Image
+                                src="/img/logo.png"
+                                alt="logo del negocio"
+                                width={190}
+                                height={170}
+                            />
+                        </div>
+                    </button>
+                </Link>
             </div>
             <div>
                 <h1 className={styles.h1}>{nombreCategoria}</h1>
@@ -53,7 +50,7 @@ export default function LayoutProducto({ children, nombreCategoria }) {
                 <p className={styles.raya}>‎</p>
             </div>
 
-            <div>{children}</div> 
+            <div>{children}</div>
         </div>
     );
 }
