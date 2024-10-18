@@ -5,7 +5,7 @@
   box-sizing: border-box;
   height: 100%;
   overflow-y: auto; /* Permite el scroll vertical */
-  background-color: #f1bdb7;
+  background-image: url('/img/fondoCategorias.jpg');
   font-family: Arial, sans-serif;
 }
 
