@@ -3,7 +3,7 @@ const express = require("express");
 
 const app = express();
 
-// Establecer los parámetros de conexión a la base de datos MySQL
+// Establecer los parámetros de conexión a la base de datos 
 let conn = mysql.createConnection({
     host: "localhost",
     database: "expresartebd",
@@ -11,7 +11,6 @@ let conn = mysql.createConnection({
     password: "73883017"
 });
 
-// Conectar a la base de datos
 conn.connect((err) => {
     if (err) {
         console.error("Error al conectar a la base de datos:", err);
