@@ -1,3 +1,4 @@
-export default function handler(req,res){
-    res.status(200).json({message:'Conenexion aprobada'})
+
+export default function handler(req, res) {
+    res.status(200).json({ message: 'Conenexion aprobada' })
 } 
