@@ -1,88 +1,32 @@
 import LayoutProducto from '../components/layout-productos';
 import Layout from '../components/layout-header';
-import styles from '../styles/Categoria.module.css';
-import Image from 'next/image';
-import Link from 'next/link';
+import Subcategory from '../components/subcategory-products';
+import connection from '../lib/db';
 
-export default function Invitaciones() {
-    return (
-        <>
-            <Layout
-                title="Souvenirs"
-                description="Pagina de souvenirs"
-                icon="/img/icono-invitacion.ico" 
-            >
-                
-            </Layout>
+// Función para obtener los datos de la base de datos
+export async function getStaticProps() {
+  const [rows] = await connection.query('select name from category where subcategory_id = 2;'); // Asegúrate de ajustar el ID de la categoría según sea necesario
+  const products = JSON.parse(JSON.stringify(rows));
+  
+  return {
+    props: {
+      products,
+    },
+  };
+}
 
-            <LayoutProducto nombreCategoria="Souvenirs">
-                {/* Contenedor de productos */}
-                <div className={styles.gridContainer}>
-                    {/* Cumpleaños */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Muñecos</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/souvenirs/souvenir-peluche.png"
-                                alt="Muñeco"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
 
-                    {/* Cenas */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Adornos</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/souvenirs/souvenir-mariposas.png" 
-                                alt="Adorno"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-
-                    {/* Bodas */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Diseños unicos</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/souvenirs/souvenir-botella.png" 
-                                alt="Diseños unico"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-
-                    {/* Baby Shower */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Otros productos</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/souvenirs/souvenir-correo.png" 
-                                alt="Otros"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-                </div>
-            </LayoutProducto>
-        </>
-    );
+export default function Souvenirs({ products }) {
+  return (
+    <>
+      <Layout
+        title="Souvenirs"
+        description="Pagina de Souvenirs"
+        icon="/img/icono-invitacion.ico"
+      />
+      <LayoutProducto nombreCategoria="Souvenirs">
+        <Subcategory products={products} category="Souvenirs" />
+      </LayoutProducto>
+    </>
+  );
 }

@@ -2,21 +2,26 @@ import React, { useState } from 'react';
 import styles from '../styles/Home.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
-import Modal from '../components/modal';
+import Modal from '../components/Modal';
 import Layout from '../components/layout-header';
+import connection from '../lib/db';
 
-export default function Catalogo() {
+export async function getStaticProps() {
+  const [rows] = await connection.query('SELECT product_id, name, price, description, size, category_id FROM product');
+  const products = JSON.parse(JSON.stringify(rows));
+
+  return {
+    props: {
+      products,
+    },
+  };
+}
+
+export default function Catalogo({ products }) {
   const images = ['/img/slide1.jpeg', '/img/slide2.jpeg', '/img/slide3.jpeg']; // Rutas de las imágenes del carrusel
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);  // Estado para el producto seleccionado
   const [isModalOpen, setIsModalOpen] = useState(false);  // Estado para abrir/cerrar el modal
-
-  const products = [
-    { id: 1, name: 'Producto 1', price: '50.00', image: '/img/products/p1.jpeg' },
-    { id: 2, name: 'Producto 2', price: '155.00', image: '/img/products/p2.jpeg' },
-    { id: 3, name: 'Producto 3', price: '777.00', image: '/img/products/p3.jpeg' },
-    { id: 4, name: 'Producto 4', price: '666.00', image: '/img/products/p4.jpeg' }
-  ];  // Lista de producto
 
   const nextSlide = () => {
     setCurrentImage((prevIndex) => (prevIndex + 1) % images.length);
@@ -35,6 +40,17 @@ export default function Catalogo() {
     setIsModalOpen(false);  // Cerramos el modal
   };
 
+  const getCategoryName = (category_id) => {
+    switch(category_id) {
+      case 1: return 'Invitaciones';
+      case 2: return 'Souvenirs';
+      case 3: return 'Papeleria';
+      case 4: return 'Creativa';
+      case 5: return 'Recuerdos';
+      default: return 'Productos';
+    }
+  };
+
   return (
     <div className={styles.body}>
       <Layout
@@ -43,12 +59,11 @@ export default function Catalogo() {
         icon="/img/icon.ico" // Cambia esta ruta si es necesario
       >
       </Layout>
-
       <div className={styles.info}>
-        <Link href="/login"> {/* Asegúrate de que el enlace apunte a la página correcta */}
+        <Link href="/login">
           <button className={styles.button}>Iniciar sesión</button>
         </Link>
-        <Link href="/carrito"> {/* Asegúrate de que el enlace apunte a la página correcta */}
+        <Link href="/carrito">
           <button className={styles.button}>
             <Image
               src="/img/carrito.png"
@@ -60,7 +75,6 @@ export default function Catalogo() {
           </button>
         </Link>
       </div>
-
       <div className={styles.divImage}>
         <Image
           src="/img/logo.png"
@@ -69,7 +83,6 @@ export default function Catalogo() {
           height={170}
         />
       </div>
-
       <div className={styles.nav}>
         {['Invitaciones', 'Souvenirs', 'Papeleria', 'Creativa', 'Recuerdos'].map((item, index) => (
           <Link href={`/${item.toLowerCase()}`} key={index} className={styles.navItem}>
@@ -77,7 +90,6 @@ export default function Catalogo() {
           </Link>
         ))}
       </div>
-
       <div className={styles.search}>
         <form action=''>
           <input className={styles.inputText} type="text" name="buscar" id="buscar" placeholder='Buscar en el catalogo' />
@@ -92,7 +104,6 @@ export default function Catalogo() {
           </button>
         </form>
       </div>
-
       {/* Sección del carrusel */}
       <div className={styles.carouselContainer}>
         <div className={styles.carousel}>
@@ -109,13 +120,12 @@ export default function Catalogo() {
           <button className={styles.carouselButton} onClick={nextSlide} aria-label="Siguiente">❯</button>
         </div>
       </div>
-
       {/* Catálogo de productos */}
       <div className={styles.catalog}>
         {products.map((product) => (
-          <div key={product.id} className={styles.product} onClick={() => handleProductClick(product)} role="button" tabIndex={0} onKeyPress={(e) => { if (e.key === 'Enter') handleProductClick(product); }}>
+          <div key={product.product_id} className={styles.product} onClick={() => handleProductClick(product)} role="button" tabIndex={0} onKeyPress={(e) => { if (e.key === 'Enter') handleProductClick(product); }}>
             <Image
-              src={product.image}
+              src={`/img/${getCategoryName(product.category_id)}/${product.name}.png`}
               alt={product.name}
               width={150}
               height={150}
@@ -126,10 +136,8 @@ export default function Catalogo() {
           </div>
         ))}
       </div>
-
       {/* Modal */}
       {isModalOpen && <Modal product={selectedProduct} closeModal={closeModal} />}
-
     </div>
   );
 }
