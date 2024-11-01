@@ -1,56 +1,32 @@
 import LayoutProducto from '../components/layout-productos';
 import Layout from '../components/layout-header';
-import styles from '../styles/Categoria.module.css';
-import Image from 'next/image';
-import Link from 'next/link';
+import Subcategory from '../components/subcategory-products';
+import connection from '../lib/db';
 
-export default function Invitaciones() {
-    return (
-        <>
-            <Layout
-                title="Papeleria"
-                description="Productos de papeleria"
-                icon="/img/icono-invitacion.ico"
-            >
+// Función para obtener los datos de la base de datos
+export async function getStaticProps() {
+  const [rows] = await connection.query('select name from category where subcategory_id = 3;'); // Asegúrate de ajustar el ID de la categoría según sea necesario
+  const products = JSON.parse(JSON.stringify(rows));
+  
+  return {
+    props: {
+      products,
+    },
+  };
+}
 
-            </Layout>
 
-            <LayoutProducto nombreCategoria="Papeleria">
-                
-                <div className={styles.gridContainer}>
-                    {/* Animales */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Animales</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/papeleria/papMariposa.jpg"
-                                alt="Papeleria con animales"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-
-                    {/* Papeleria con forma de textos */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Textos</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/papeleria/papAna.jpg"
-                                alt="Papeleria con textos o nombres"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-                </div>
-            </LayoutProducto>
-        </>
-    );
+export default function Papeleria({ products }) {
+  return (
+    <>
+      <Layout
+        title="Papeleria"
+        description="Pagina de papeleria"
+        icon="/img/icono-invitacion.ico"
+      />
+      <LayoutProducto nombreCategoria="Papeleria">
+        <Subcategory products={products} category="Papeleria" />
+      </LayoutProducto>
+    </>
+  );
 }

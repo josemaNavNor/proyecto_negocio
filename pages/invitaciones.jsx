@@ -1,88 +1,32 @@
 import LayoutProducto from '../components/layout-productos';
 import Layout from '../components/layout-header';
-import styles from '../styles/Categoria.module.css';
-import Image from 'next/image';
-import Link from 'next/link';
+import Subcategory from '../components/subcategory-products';
+import connection from '../lib/db';
 
-export default function Invitaciones() {
-    return (
-        <>
-            <Layout
-                title="Invitaciones"
-                description="Pagina de invitaciones"
-                icon="/img/icono-invitacion.ico"
-            >
+// Función para obtener los datos de la base de datos
+export async function getStaticProps() {
+  const [rows] = await connection.query('select name from category where subcategory_id = 1;'); // Asegúrate de ajustar el ID de la categoría según sea necesario
+  const products = JSON.parse(JSON.stringify(rows));
+  
+  return {
+    props: {
+      products,
+    },
+  };
+}
 
-            </Layout>
 
-            <LayoutProducto nombreCategoria="Invitaciones">
-                {/* Contenedor de productos */}
-                <div className={styles.gridContainer}>
-                    {/* Cumpleaños */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Cumpleaños</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/invitacion1.jpg"
-                                alt="Cumpleaños"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-
-                    {/* Cenas */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Cenas</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/invitaciones/happy-xv-pink.png"
-                                alt="Cenas"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-
-                    {/* Bodas */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Bodas</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/invitaciones/invitacion-black.png"
-                                alt="Bodas"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-
-                    {/* Baby Shower */}
-                    <div className={styles.contenedor}>
-                        <h3 className={styles.h3}>Baby Shower</h3>
-                        <div className={styles.imagenProducto}>
-                            <Image
-                                src="/img/shower.jpg"
-                                alt="Baby Shower"
-                                width={170}
-                                height={200}
-                            />
-                        </div>
-                        <Link href="/">
-                            <button className={styles.buttonVerMas}>Ver más</button>
-                        </Link>
-                    </div>
-                </div>
-            </LayoutProducto>
-        </>
-    );
+export default function Invitaciones({ products }) {
+  return (
+    <>
+      <Layout
+        title="Invitaciones"
+        description="Pagina de invitaciones"
+        icon="/img/icono-invitacion.ico"
+      />
+      <LayoutProducto nombreCategoria="Invitaciones">
+        <Subcategory products={products} category="invitaciones" />
+      </LayoutProducto>
+    </>
+  );
 }
