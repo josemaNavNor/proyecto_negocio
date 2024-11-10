@@ -17,6 +17,35 @@ export default function Modal({ product, closeModal }) {
     category_name = 'Recuerdos';
   }
 
+  const handleAddToCart = async (product) => {
+    try {
+        const response = await fetch('/api/addToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                cliente_id: /* ID del cliente */"",
+                producto_id: product.product_id,
+                cantidad: 1, // Puedes ajustar la cantidad según el caso
+            }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(`${product.name} agregado al carrito.`);
+        } else {
+            alert(`Error: ${data.message}`);
+        }
+    } catch (error) {
+        console.error('Error al agregar producto al carrito:', error);
+        alert('Hubo un problema al agregar el producto al carrito');
+    }
+};
+
+// Usa este botón en el componente de detalle del producto
+<button onClick={() => handleAddToCart(product)}>Agregar al carrito</button>
+
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
