@@ -7,7 +7,7 @@ import Layout from '../components/layout-header';
 import connection from '../lib/db';
 
 export async function getStaticProps() {
-  const [rows] = await connection.query('SELECT product_id, name, price, description, size, category_id FROM product');
+  const [rows] = await connection.query('SELECT product_id, name, price, description, category_id FROM product');
   const products = JSON.parse(JSON.stringify(rows));
 
   return {
