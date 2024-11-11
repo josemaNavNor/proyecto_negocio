@@ -4,10 +4,10 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
         try {
             const [rows] = await connection.query(
-                'SELECT c.carrito_id, c.cantidad, p.product_id, p.name, p.price, p.category_id ' +
-                'FROM Carrito_de_compras c ' +
-                'JOIN Product p ON c.producto_id = p.product_id ' +
-                'WHERE c.cliente_id = ?', 
+                'SELECT Carrito_de_compras.carrito_id, Carrito_de_compras.cantidad, Product.product_id, Product.name, Product.price, Product.category_id ' +
+                'FROM Carrito_de_compras ' +
+                'JOIN Product  ON Carrito_de_compras.producto_id = Product.product_id ' +
+                'WHERE Carrito_de_compras.cliente_id = ?', 
                 [/* ID del cliente */]
             );
 
