@@ -22,9 +22,9 @@ export default function Carrito() {
     }, []);
 
     // Función para actualizar la cantidad de un producto en el carrito
-    const updateQuantity = (productId, quantity) => {
-        const updatedCart = cartItems.map(item => 
-            item.product_id === productId ? { ...item, quantity } : item
+    const updateQuantity = (productId, cantidad) => {
+        const updatedCart = cartItems.map(item =>
+            item.product_id === productId ? { ...item, cantidad } : item
         );
         setCartItems(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart)); // Guardar en almacenamiento local
@@ -32,8 +32,13 @@ export default function Carrito() {
 
     // Función para calcular el total
     const calculateTotal = () => {
-        return cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+        return cartItems.reduce((total, item) => {
+            const price = parseFloat(item.price); // Asegurarse de que el precio es un número
+            const cantidad = parseInt(item.cantidad, 10); // Asegurarse de que la cantidad es un número
+            return total + (price * cantidad);
+        }, 0).toFixed(2);
     };
+
 
     return (
         <div className={styles.body}>
@@ -42,7 +47,7 @@ export default function Carrito() {
                 description="Carrito de compra"
                 icon="/img/carrito-icono.ico"
             />
-            
+
             <div className={styles.divButtonLogin}>
                 <Link href="/login">
                     <button className={styles.button}>Iniciar sesión</button>
@@ -76,7 +81,7 @@ export default function Carrito() {
                     {cartItems.map((item) => (
                         <div key={item.product_id} className={styles.cartItem}>
                             <Image
-                                src={`/img/${item.category}/${item.name}.png`}
+                                src={`/img/souvenirs/Peluche de Navidad.png`}
                                 alt={item.name}
                                 width={100}
                                 height={100}
@@ -85,11 +90,11 @@ export default function Carrito() {
                             <p className={styles.productName}>{item.name}</p>
                             <p className={styles.productPrice}>${item.price}</p>
                             <div className={styles.quantityControls}>
-                                <button onClick={() => updateQuantity(item.product_id, item.quantity - 1)}>-</button>
-                                <span>{item.quantity}</span>
-                                <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)}>+</button>
+                                <button onClick={() => updateQuantity(item.product_id, item.cantidad - 1)}>-</button>
+                                <span>{item.cantidad}</span>
+                                <button onClick={() => updateQuantity(item.product_id, item.cantidad + 1)}>+</button>
                             </div>
-                            <p className={styles.totalPrice}>${(item.price * item.quantity).toFixed(2)}</p>
+                            <p className={styles.totalPrice}>${(item.price * item.cantidad).toFixed(2)}</p>
                         </div>
                     ))}
                     <div className={styles.totalContainer}>
