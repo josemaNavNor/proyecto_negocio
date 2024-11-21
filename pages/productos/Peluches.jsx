@@ -5,7 +5,7 @@ import connection from '../../lib/db';
 
 // Función para obtener los datos de la base de datos
 export async function getStaticProps() {
-  const [rows] = await connection.query('SELECT product_id, name, price, description, size, category_id FROM product WHERE category_id = 2');
+  const [rows] = await connection.query('SELECT product_id, name, price, description, size, category_id FROM product WHERE name LIKE "%peluche%"');
   const products = JSON.parse(JSON.stringify(rows));
 
   return {
