@@ -5,7 +5,7 @@ import connection from '../../lib/db';
 
 // Función para obtener los datos de la base de datos
 export async function getStaticProps() {
-    const [rows] = await connection.query('SELECT product_id, name, price, description, size, category_id FROM product WHERE category_id = 1');
+    const [rows] = await connection.query('SELECT product_id, name, price, description, size, category_id FROM product WHERE name LIKE "%cena%"');
     const products = JSON.parse(JSON.stringify(rows));
 
     return {
@@ -15,15 +15,13 @@ export async function getStaticProps() {
     };
 }
 
-
-export default function InvitacionesXV({ products }) {
-
+export default function Cenas({ products }) {
     return (
         <>
             <Layout
-                title="Invitaciones"
-                description="Pagina de invitaciones"
-                icon="/img/icono-invitacion.ico"
+                title="Cenas"
+                description="Página de cenas"
+                icon="/img/icono-cenas.ico"
             />
             <LayoutProducto nombreCategoria="Invitaciones">
                 <Productos products={products} category="Invitaciones" />
