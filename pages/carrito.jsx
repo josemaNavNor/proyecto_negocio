@@ -1,44 +1,103 @@
-import Image from "next/image";
-import Link from "next/link";
-import styles from "../styles/Carrito.module.css";
-import Layout from '../components/layout-header';
+// pages/carrito.jsx
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import Layout from '../components/layout-header';
+import Image from "next/image";
+import styles from "../styles/Carrito.module.css";
 
 export default function Carrito() {
+    const [isRegistered, setIsRegistered] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+    const router = useRouter();
 
     useEffect(() => {
-        const fetchCartItems = async () => {
+        const checkUser = async () => {
+            const email = localStorage.getItem('userEmail');
+            if (!email) {
+                router.push('/login');
+                return;
+            }
+
             try {
-                const response = await fetch('/api/getCartItems'); // Asegúrate de crear este endpoint para recuperar los productos
+                const response = await fetch('/api/checkUser', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email }),
+                });
+
                 const data = await response.json();
-                setCartItems(data);
+
+                if (data.registered) {
+                    setIsRegistered(true);
+                } else {
+                    router.push('/login');
+                }
             } catch (error) {
-                console.error('Error al recuperar los productos del carrito:', error);
+                console.error('Error al verificar el usuario:', error);
+                router.push('/login');
             }
         };
 
-        fetchCartItems();
-    }, []);
+        checkUser();
+    }, [router]);
 
-    // Función para actualizar la cantidad de un producto en el carrito
+    useEffect(() => {
+        if (isRegistered) {
+            const fetchCartItems = async () => {
+                const email = localStorage.getItem('userEmail');
+
+                try {
+                    const response = await fetch('/api/getCartItems', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email }),
+                    });
+
+                    const data = await response.json();
+                    setCartItems(data);
+                } catch (error) {
+                    console.error('Error al recuperar los productos del carrito:', error);
+                }
+            };
+
+            fetchCartItems();
+        }
+    }, [isRegistered]);
+
     const updateQuantity = (productId, cantidad) => {
         const updatedCart = cartItems.map(item =>
             item.product_id === productId ? { ...item, cantidad } : item
         );
         setCartItems(updatedCart);
-        localStorage.setItem("cart", JSON.stringify(updatedCart)); // Guardar en almacenamiento local
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
     };
 
-    // Función para calcular el total
     const calculateTotal = () => {
         return cartItems.reduce((total, item) => {
-            const price = parseFloat(item.price); // Asegurarse de que el precio es un número
-            const cantidad = parseInt(item.cantidad, 10); // Asegurarse de que la cantidad es un número
+            const price = parseFloat(item.price);
+            const cantidad = parseInt(item.cantidad, 10);
             return total + (price * cantidad);
         }, 0).toFixed(2);
     };
 
+    if (!isRegistered) {
+        return (
+            <div className={styles.body}>
+                <Layout
+                    title="Mi carrito"
+                    description="Carrito de compra"
+                    icon="/img/carrito-icono.ico"
+                />
+                <div className={styles.divh1}>
+                    <h2>Necesitas iniciar sesión primero.</h2>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.body}>
@@ -48,40 +107,12 @@ export default function Carrito() {
                 icon="/img/carrito-icono.ico"
             />
 
-            <div className={styles.divButtonLogin}>
-                <Link href="/login">
-                    <button className={styles.button}>Iniciar sesión</button>
-                </Link>
-            </div>
-
-            <Link href="/" legacyBehavior>
-                <button className={styles.buttonInicioLink}>
-                    <div className={styles.divImage}>
-                        <Image
-                            src="/img/logo.png"
-                            alt="logo del negocio"
-                            width={190}
-                            height={170}
-                        />
-                    </div>
-                </button>
-            </Link>
-
-            <div className={styles.divh1}>
-                <h1>Mi carrito de compras</h1>
-            </div>
-
-            <div className={styles.raya}>
-                <p className={styles.raya}>‎</p>
-            </div>
-
-            {/* Mostrar productos en el carrito */}
             {cartItems.length > 0 ? (
                 <div className={styles.cartItems}>
                     {cartItems.map((item) => (
                         <div key={item.product_id} className={styles.cartItem}>
                             <Image
-                                src={`/img/souvenirs/Peluche de Navidad.png`}
+                                src={`/img/souvenirs/${item.name}.png`}
                                 alt={item.name}
                                 width={100}
                                 height={100}
@@ -103,9 +134,10 @@ export default function Carrito() {
                 </div>
             ) : (
                 <div className={styles.divh1}>
-                    <h2>Inicie sesión para poder ver su carrito de compra!</h2>
+                    <h2>No hay productos en el carrito.</h2>
                 </div>
             )}
         </div>
     );
 }
+

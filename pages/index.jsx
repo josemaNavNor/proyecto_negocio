@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import { query } from '../lib/db';
+import React, { useState, useEffect } from 'react';
 import styles from '../styles/Home.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import Modal from '../components/modal';
 import Layout from '../components/layout-header';
-import connection from '../lib/db';
 
 export async function getStaticProps() {
-  const [rows] = await connection.query('SELECT product_id, name, price, description, size, category_id FROM product');
-  const products = JSON.parse(JSON.stringify(rows));
+  const products = await query('SELECT product_id, name, price, description, size, category_id FROM product');
 
   return {
     props: {
-      products,
+      products: JSON.parse(JSON.stringify(products)),
     },
   };
 }
@@ -22,6 +21,35 @@ export default function Catalogo({ products }) {
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);  // Estado para el producto seleccionado
   const [isModalOpen, setIsModalOpen] = useState(false);  // Estado para abrir/cerrar el modal
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const fetchUserName = async (email) => {
+      try {
+        const response = await fetch('/api/getUserName', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setUserName(data.username);
+        } else {
+          console.error('User not found');
+        }
+      } catch (error) {
+        console.error('Error fetching user name:', error);
+      }
+    };
+
+    const userEmail = localStorage.getItem('userEmail');
+    if (userEmail) {
+      fetchUserName(userEmail);
+    }
+  }, []);
 
   const nextSlide = () => {
     setCurrentImage((prevIndex) => (prevIndex + 1) % images.length);
@@ -60,9 +88,15 @@ export default function Catalogo({ products }) {
       >
       </Layout>
       <div className={styles.info}>
-        <Link href="/login">
-          <button className={styles.button}>Iniciar sesión</button>
-        </Link>
+        {userName ? (
+          <Link href="/userData">
+            <button className={styles.button}>{userName}</button>
+          </Link>
+        ) : (
+          <Link href="/login">
+            <button className={styles.button}>Iniciar sesión</button>
+          </Link>
+        )}
         <Link href="/carrito">
           <button className={styles.button}>
             <Image
