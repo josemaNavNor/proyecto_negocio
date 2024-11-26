@@ -15,14 +15,12 @@ export async function getStaticProps() {
   };
 }
 
-
 export default function InvitacionesXV({ products }) {
-
     return (
         <>
             <Layout
                 title="Invitaciones"
-                description="Pagina de invitaciones"
+                description="Página de invitaciones XV"
                 icon="/img/icono-invitacion.ico"
             />
             <LayoutProducto nombreCategoria="Invitaciones">
