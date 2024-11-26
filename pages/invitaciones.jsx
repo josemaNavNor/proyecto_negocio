@@ -1,11 +1,12 @@
+// pages/invitaciones.jsx
 import LayoutProducto from '../components/layout-productos';
 import Layout from '../components/layout-header';
 import Subcategory from '../components/subcategory-products';
-import connection from '../lib/db';
+import { query } from '../lib/db';
 
 // Función para obtener los datos de la base de datos
 export async function getStaticProps() {
-  const [rows] = await connection.query('select name from category where subcategory_id = 1;'); // Asegúrate de ajustar el ID de la categoría según sea necesario
+  const rows = await query('SELECT name FROM category WHERE subcategory_id = 1'); // Asegúrate de ajustar el ID de la categoría según sea necesario
   const products = JSON.parse(JSON.stringify(rows));
   
   return {
@@ -14,7 +15,6 @@ export async function getStaticProps() {
     },
   };
 }
-
 
 export default function Invitaciones({ products }) {
   return (

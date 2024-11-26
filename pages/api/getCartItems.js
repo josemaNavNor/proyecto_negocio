@@ -1,20 +1,35 @@
-import connection from '../../lib/db';
+import { query } from '../../lib/db';
 
 export default async function handler(req, res) {
-    if (req.method === 'GET') {
-        try {
-            const [rows] = await connection.query(
-                `SELECT carrito_id, cantidad, producto_id, product.name, product.price, product.description, product.category_id 
-                FROM carrito_de_compras 
-                JOIN product ON carrito_de_compras.producto_id = product.product_id 
-                WHERE carrito_de_compras.cliente_id = 100`
-            );
+  if (req.method === 'POST') {
+    const { email } = req.body;
 
-            res.status(200).json(rows);
-        } catch (error) {
-            res.status(500).json({ message: 'Error al recuperar los productos del carrito', error });
-        }
-    } else {
-        res.status(405).json({ message: 'Método no permitido' });
+    try {
+      // Obtén el cliente_id a partir del email
+      const customer = await query('SELECT customer_id FROM customer WHERE email = ?', [email]);
+
+      if (customer.length === 0) {
+        res.status(404).json({ error: 'Usuario no encontrado' });
+        return;
+      }
+
+      const customerId = customer[0].customer_id;
+
+      // Obtén los productos del carrito para este cliente
+      const cartItems = await query(`
+        SELECT p.product_id, p.name, p.price, c.cantidad
+        FROM carrito_de_compras c
+        JOIN product p ON c.producto_id = p.product_id
+        WHERE c.cliente_id = ?
+      `, [customerId]);
+
+      res.status(200).json(cartItems);
+    } catch (error) {
+      console.error('Error al recuperar los productos del carrito:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
     }
+  } else {
+    res.status(405).json({ error: 'Método no permitido' });
+  }
 }
+

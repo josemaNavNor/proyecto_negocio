@@ -1,14 +1,16 @@
 // Importación de componentes y librerías necesarios
 import Layout from '../../components/layout-header'; // Componente de diseño para el encabezado
 import LayoutProducto from '../../components/layout-productos'; // Componente de diseño para productos
-import connection from '../../lib/db'; // Conexión a la base de datos
+import { query } from '../../lib/db';
 import Image from 'next/image'; // Componente para mostrar imágenes en Next.js
 import styles from '../../styles/Home.module.css'; // Estilos CSS del componente
+import Link from 'next/link';
 
 // Función para generar rutas estáticas para el pre-renderizado de páginas de productos
 export async function getStaticPaths() {
     // Realiza una consulta a la base de datos para obtener el ID y la categoría de los productos
-    const [rows] = await connection.query('SELECT product_id, category_id FROM product');
+    const rows = await query('SELECT product_id, category_id FROM product'); // Asegúrate de ajustar el ID de la categoría según sea necesario
+
     // Mapea los resultados de la consulta para generar rutas dinámicas basadas en el ID del producto
     const paths = rows.map((product) => ({
         params: { id: product.product_id.toString() }, // Convierte el ID del producto a cadena
@@ -21,7 +23,8 @@ export async function getStaticPaths() {
 // Función para obtener datos específicos del producto basándose en el ID de la URL
 export async function getStaticProps({ params }) {
     // Realiza una consulta a la base de datos para obtener todos los datos del producto correspondiente al ID
-    const [rows] = await connection.query('SELECT * FROM product WHERE product_id = ?', [params.id]);
+    const rows = await query('SELECT * FROM product WHERE product_id = ?', [params.id]); // Asegúrate de ajustar el ID de la categoría según sea necesario
+
     // Convierte los datos obtenidos en un objeto JSON
     const product = JSON.parse(JSON.stringify(rows[0]));
 
@@ -46,22 +49,31 @@ export default function ProductoDetalle({ product }) {
     } else if (product.category_id === 5) {
         category_name = 'Recuerdos';
     }
-    
+
     return (
         <>
-            <Layout title={product.name} description={product.description} icon="/img/icon.ico" />
-            <div className={styles.body}>
-                <h1>{product.name}</h1>
-                <Image
-                    src={`/img/${category_name}/${product.name}.png`}
-                    alt={product.name}
-                    width={200}
-                    height={200}
-                />
-                <p>Precio: ${product.price}</p>
-                <p>Descripción: {product.description}</p>
-                <p>Tamaño: {product.size}</p>
-            </div>
+            {/* Utiliza el componente LayoutComun para el encabezado */}
+            <LayoutProducto nombreCategoria={category_name}>
+                <Layout title={product.name} description={product.description} icon="/img/icon.ico" />
+                <div className={styles.body}>
+                    <h1>{product.name}</h1>
+                    <Image
+                        src={`/img/${category_name}/${product.name}.png`}
+                        alt={product.name}
+                        width={200}
+                        height={200}
+                    />
+                    <p>Precio: ${product.price}</p>
+                    <p>Descripción: {product.description}</p>
+                    <p>Tamaño: {product.size}</p>
+
+                    <div className={styles.GridButtonLogin}>
+                        <Link href="/login">
+                            <button className={styles.buttonAddToCart}>Agregar al carrito</button>
+                        </Link>
+                    </div>
+                </div>
+            </LayoutProducto>
         </>
     );
 }
