@@ -5,21 +5,23 @@ import { query } from '../../lib/db';
 
 // Función para obtener los datos de la base de datos
 export async function getStaticProps() {
-    const rows = await query('SELECT product_id, name, price, description, size, category_id FROM product WHERE name LIKE "%cena%"'); // Asegúrate de ajustar el ID de la categoría según sea necesario
-    const products = JSON.parse(JSON.stringify(rows));
-    
-    return {
-      props: {
-        products,
-      },
-    };
+  const rows = await query('SELECT product_id, name, price, description, size, category_id FROM product WHERE name LIKE "%cena%"'); // Asegúrate de ajustar el ID de la categoría según sea necesario
+  const products = JSON.parse(JSON.stringify(rows));
+  
+  return {
+    props: {
+      products,
+    },
+  };
+}
 
+export default function Boda({ products }) {
     return (
         <>
             <Layout
-                title="Cenas"
-                description="Página de cenas"
-                icon="/img/icono-cenas.ico"
+                title="Invitaciones"
+                description="Página de invitaciones para cenas"
+                icon="/img/icono-invitacion.ico"
             />
             <LayoutProducto nombreCategoria="Invitaciones">
                 <Productos products={products} category="Invitaciones" />
@@ -27,3 +29,4 @@ export async function getStaticProps() {
         </>
     );
 }
+
