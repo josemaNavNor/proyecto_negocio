@@ -15,7 +15,7 @@ export default function Productos({ products, category }) {
               width={170}
               height={200}
             />
-            <Link href={`/productos/${product.product_id}`}>
+            <Link href={`/${product.product_id}`}>
               <button className={styles.buttonVerMas}>Ver detalles</button>
             </Link>
           </div>

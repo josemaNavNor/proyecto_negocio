@@ -60,7 +60,7 @@ export default function Login() {
                 title="Inicio de sesion"
                 description="Pagina de inicio de sesion"
                 icon="/img/login-icono.ico"
-            ></Layout>
+            />
 
             <div className={styles.contenedor}>
                 <div className={styles.divImage}>
@@ -96,4 +96,3 @@ export default function Login() {
         </div>
     );
 }
-
