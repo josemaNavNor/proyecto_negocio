@@ -7,6 +7,10 @@
     font-family: Arial, sans-serif;
 }
 
+.cartItems {
+    margin: 0 auto;
+}
+
 .divImage {
     margin: 0px 20px 20px 30px;
     width: 20%;

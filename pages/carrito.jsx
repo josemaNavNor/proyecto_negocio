@@ -1,13 +1,26 @@
-// pages/carrito.jsx
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../components/layout-header';
+import LayoutPagina from '../components/layout-paginas'; // Importa LayoutPagina
 import Image from "next/image";
-import styles from "../styles/Carrito.module.css";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import styles from "../styles/Login.module.css";
+import Swal from 'sweetalert2';
+import { query } from '../lib/db';
 
-export default function Carrito() {
+export async function getStaticProps() {
+    const products = await query('SELECT name, category_id FROM product');
+  
+    return {
+      props: {
+        products: JSON.parse(JSON.stringify(products)),
+      },
+    };
+}
+
+export default function Carrito({ products }) {
     const [isRegistered, setIsRegistered] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+    const [totalAmount, setTotalAmount] = useState(0);  // Añadir estado para el total
     const router = useRouter();
 
     useEffect(() => {
@@ -47,12 +60,7 @@ export default function Carrito() {
         if (isRegistered) {
             const fetchCartItems = async () => {
                 const email = localStorage.getItem('userEmail');
-    
-                if (!email) {
-                    console.error('El email no está definido en localStorage');
-                    return;
-                }
-    
+
                 try {
                     const response = await fetch(`/api/getCartItems?email=${encodeURIComponent(email)}`, {
                         method: 'GET', // Cambiar a GET
@@ -60,94 +68,159 @@ export default function Carrito() {
                             'Content-Type': 'application/json',
                         },
                     });
-    
+
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-    
+
                     const data = await response.json();
                     setCartItems(data);
+                    updateTotalAmount(data);  // Actualizar total al cargar los ítems
                 } catch (error) {
                     console.error('Error al recuperar los productos del carrito:', error);
                 }
             };
-    
+
             fetchCartItems();
         }
     }, [isRegistered]);
-    
-    
-    
-    const updateQuantity = (productId, cantidad) => {
+
+    const updateQuantity = (productId, newQuantity) => {
+        if (newQuantity < 1) return; // Asegurarnos de que la cantidad no sea negativa
+
         const updatedCart = cartItems.map(item =>
-            item.product_id === productId ? { ...item, cantidad } : item
+            item.product_id === productId ? { ...item, cantidad: newQuantity } : item
         );
         setCartItems(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
+        updateTotalAmount(updatedCart);  // Actualizar total al cambiar cantidad
     };
 
-
-    const calculateTotal = () => {
-        return cartItems.reduce((total, item) => {
+    const updateTotalAmount = (items) => {
+        const total = items.reduce((sum, item) => {
             const price = parseFloat(item.price);
             const cantidad = parseInt(item.cantidad, 10);
-            return total + (price * cantidad);
+            return sum + (price * cantidad);
         }, 0).toFixed(2);
+        setTotalAmount(total);
+    };
+
+    const getCategoryName = (category_id) => {
+        switch(category_id) {
+          case 1: return 'Invitaciones';
+          case 2: return 'Souvenirs';
+          case 3: return 'Papeleria';
+          case 4: return 'Creativa';
+          case 5: return 'Recuerdos';
+          default: return 'Invitaciones';
+        }
+    };
+
+    const removeItem = async (productId) => {
+        try {
+            const email = localStorage.getItem('userEmail');
+
+            const response = await fetch('/api/removeFromCart', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, productId }),
+            });
+
+            if (response.ok) {
+                const updatedCart = cartItems.filter(item => item.product_id !== productId);
+                setCartItems(updatedCart);
+                localStorage.setItem("cart", JSON.stringify(updatedCart));
+                updateTotalAmount(updatedCart);  // Actualizar total al eliminar ítem
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Producto eliminado',
+                    text: 'El producto ha sido eliminado del carrito.',
+                });
+            } else {
+                const data = await response.json();
+                console.error('Error al eliminar el producto del carrito:', data);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Hubo un problema al eliminar el producto del carrito.',
+                });
+            }
+        } catch (error) {
+            console.error('Error al eliminar el producto del carrito:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al eliminar el producto del carrito.',
+            });
+        }
     };
 
     if (!isRegistered) {
         return (
-            <div className={styles.body}>
-                <Layout
-                    title="Mi carrito"
-                    description="Carrito de compra"
-                    icon="/img/carrito-icono.ico"
-                />
+            <LayoutPagina nombreCategoria="Mi carrito">
                 <div className={styles.divh1}>
                     <h2>Necesitas iniciar sesión primero.</h2>
                 </div>
-            </div>
+            </LayoutPagina>
         );
     }
 
     return (
-        <div className={styles.body}>
-            <Layout
-                title="Mi carrito"
-                description="Carrito de compra"
-                icon="/img/carrito-icono.ico"
-            />
-
-            {cartItems.length > 0 ? (
-                <div className={styles.cartItems}>
-                    {cartItems.map((item) => (
-                        <div key={item.product_id} className={styles.cartItem}>
-                            <Image
-                                src={`/img/souvenirs/${item.name}.png`}
-                                alt={item.name}
-                                width={100}
-                                height={100}
-                                className={styles.productImage}
-                            />
-                            <p className={styles.productName}>{item.name}</p>
-                            <p className={styles.productPrice}>${item.price}</p>
-                            <div className={styles.quantityControls}>
-                                <button onClick={() => updateQuantity(item.product_id, item.cantidad - 1)}>-</button>
-                                <span>{item.cantidad}</span>
-                                <button onClick={() => updateQuantity(item.product_id, item.cantidad + 1)}>+</button>
+        <LayoutPagina nombreCategoria="Mi carrito">
+            <div className={styles.body}>
+                {cartItems.length > 0 ? (
+                    <div className={styles.cartItems}>
+                        {cartItems.map((item) => (
+                            <div key={item.product_id} className={styles.cartItem}>
+                                <Image
+                                    src={`/img/${getCategoryName(item.category_id)}/${item.name}.png`}
+                                    alt={item.name}
+                                    width={100}
+                                    height={100}
+                                    className={styles.productImage}
+                                />
+                                <p className={styles.productName}>Nombre: {item.name}</p>
+                                <p className={styles.productPrice}>Precio: ${item.price}</p>
+                                <p className={styles.totalPrice}>Total: ${(item.price * item.cantidad).toFixed(2)}</p>
+                                <button className={styles.removeButton} onClick={() => removeItem(item.product_id)}>Eliminar</button>
                             </div>
-                            <p className={styles.totalPrice}>${(item.price * item.cantidad).toFixed(2)}</p>
+                        ))}
+                        <div className={styles.totalContainer}>
+                            <h3>Total: ${totalAmount}</h3>
                         </div>
-                    ))}
-                    <div className={styles.totalContainer}>
-                        <h3>Total: ${calculateTotal()}</h3>
+                        <PayPalScriptProvider options={{ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}>
+                            <PayPalButtons
+                                style={{ layout: 'vertical' }}
+                                createOrder={(data, actions) => {
+                                    return actions.order.create({
+                                        purchase_units: [{
+                                            amount: {
+                                                value: totalAmount,
+                                            },
+                                        }],
+                                    });
+                                }}
+                                onApprove={(data, actions) => {
+                                    return actions.order.capture().then(details => {
+                                        console.log('Transaction completed by', details.payer.name.given_name);
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '¡Pago completado!',
+                                            text: 'Tu compra ha sido realizada exitosamente.',
+                                        });
+                                    });
+                                }}
+                            />
+                        </PayPalScriptProvider>
                     </div>
-                </div>
-            ) : (
-                <div className={styles.divh1}>
-                    <h2>No hay productos en el carrito.</h2>
-                </div>
-            )}
-        </div>
+                ) : (
+                    <div className={styles.divh1}>
+                        <h2>No hay productos en el carrito.</h2>
+                    </div>
+                )}
+            </div>
+        </LayoutPagina>
     );
 }
