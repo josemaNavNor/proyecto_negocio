@@ -47,27 +47,37 @@ export default function Carrito() {
         if (isRegistered) {
             const fetchCartItems = async () => {
                 const email = localStorage.getItem('userEmail');
-
+    
+                if (!email) {
+                    console.error('El email no está definido en localStorage');
+                    return;
+                }
+    
                 try {
-                    const response = await fetch('/api/getCartItems', {
-                        method: 'POST',
+                    const response = await fetch(`/api/getCartItems?email=${encodeURIComponent(email)}`, {
+                        method: 'GET', // Cambiar a GET
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ email }),
                     });
-
+    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+    
                     const data = await response.json();
                     setCartItems(data);
                 } catch (error) {
                     console.error('Error al recuperar los productos del carrito:', error);
                 }
             };
-
+    
             fetchCartItems();
         }
     }, [isRegistered]);
-
+    
+    
+    
     const updateQuantity = (productId, cantidad) => {
         const updatedCart = cartItems.map(item =>
             item.product_id === productId ? { ...item, cantidad } : item
@@ -75,6 +85,7 @@ export default function Carrito() {
         setCartItems(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
     };
+
 
     const calculateTotal = () => {
         return cartItems.reduce((total, item) => {
@@ -140,4 +151,3 @@ export default function Carrito() {
         </div>
     );
 }
-

@@ -36,6 +36,7 @@ export default function Catalogo({ products }) {
 
         const data = await response.json();
         if (response.ok) {
+          console.log(process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID);
           setUserName(data.username);
         } else {
           console.error('User not found');
@@ -85,8 +86,7 @@ export default function Catalogo({ products }) {
         title="Catálogo"
         description="Página principal del catálogo"
         icon="/img/icon.ico" // Cambia esta ruta si es necesario
-      >
-      </Layout>
+      />
       <div className={styles.info}>
         {userName ? (
           <Link href="/userData">
