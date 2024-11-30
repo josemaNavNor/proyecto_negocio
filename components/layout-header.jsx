@@ -7,6 +7,7 @@ export default function Layout({ title, description, icon }) {
         <title>{title}</title>
         <meta name="description" content={description} />
         {icon && <link rel="icon" href={icon} />}
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&family=Josefin+Sans:wght@400;700&family=Cantarell:wght@400;700&family=Quicksand:wght@400;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet"></link>
       </Head>
     </div>
   );
