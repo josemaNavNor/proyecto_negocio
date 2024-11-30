@@ -3,25 +3,9 @@ import styles from '../styles/Categoria.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
 
-export default function LayoutProducto({ children, nombreCategoria }) {
+export default function LayoutCarrito({ children, nombreCategoria }) {
     return (
         <div className={styles.body}>
-            <div className={styles.buttonsGroup}>
-                <div className={styles.GridButtonCart}>
-                    <Link href="/carrito">
-                        <button className={styles.button}>
-                            <Image
-                                src="/img/carrito.png"
-                                alt="Carrito"
-                                width={25}
-                                height={25}
-                            />
-                            Mi Carrito
-                        </button>
-                    </Link>
-                </div>
-
-            </div>
             <div className={styles.buttonInicio}>
                 <Link href="/" legacyBehavior>
                     <button className={styles.buttonInicioLink}>

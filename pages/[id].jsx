@@ -31,7 +31,7 @@ export default function ProductoDetalle({ product }) {
     const [quantity, setQuantity] = useState(1);
 
     // Asignación de categoría por ID
-    const categoryNames = ['Invitaciones', 'Souvenirs', 'Papelería', 'Creativa', 'Recuerdos'];
+    const categoryNames = ['Invitaciones', 'Souvenirs', 'Papeleria', 'Creativa', 'Recuerdos'];
     const category_name = categoryNames[product.category_id - 1] || 'Otros';
 
     // Manejar adición al carrito

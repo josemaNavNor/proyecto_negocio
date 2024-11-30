@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import LayoutPagina from '../components/layout-paginas'; // Importa LayoutPagina
+import LayoutCarrito from '../components/layout-carrito'; 
 import Image from "next/image";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import styles from "../styles/Login.module.css";
@@ -159,16 +159,16 @@ export default function Carrito({ products }) {
 
     if (!isRegistered) {
         return (
-            <LayoutPagina nombreCategoria="Mi carrito">
+            <LayoutCarrito nombreCategoria="Mi carrito">
                 <div className={styles.divh1}>
                     <h2>Necesitas iniciar sesión primero.</h2>
                 </div>
-            </LayoutPagina>
+            </LayoutCarrito>
         );
     }
 
     return (
-        <LayoutPagina nombreCategoria="Mi carrito">
+        <LayoutCarrito nombreCategoria="Mi carrito">
             <div className={styles.body}>
                 {cartItems.length > 0 ? (
                     <div className={styles.cartItems}>
@@ -183,7 +183,7 @@ export default function Carrito({ products }) {
                                 />
                                 <p className={styles.productName}>Nombre: {item.name}</p>
                                 <p className={styles.productPrice}>Precio: ${item.price}</p>
-                                <p className={styles.totalPrice}>Total: ${(item.price * item.cantidad).toFixed(2)}</p>
+                                <p>Has agregado {item.cantidad} de {item.name} al carrito</p>
                                 <button className={styles.removeButton} onClick={() => removeItem(item.product_id)}>Eliminar</button>
                             </div>
                         ))}
@@ -221,6 +221,6 @@ export default function Carrito({ products }) {
                     </div>
                 )}
             </div>
-        </LayoutPagina>
+        </LayoutCarrito>
     );
 }
