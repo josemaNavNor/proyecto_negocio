@@ -2,9 +2,9 @@
     background-image: url('/img/fondologin.png');
     background-size: cover;
     /* Esto ajusta la imagen al tamaño del contenedor */
-    height: 80vh;
+    height: 100vh;
     /* Asegura que ocupe toda la pantalla */
-    width: 100vw;
+    width: 93%;
     /* Asegura que ocupe el ancho completo */
     padding: 50px;
     font-family: Arial, Helvetica, sans-serif;

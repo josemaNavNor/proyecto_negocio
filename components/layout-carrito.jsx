@@ -1,11 +1,14 @@
-// components/LayoutComun.jsx
 import styles from '../styles/Categoria.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
+import Head from 'next/head'; // Importamos Head de next/head
 
 export default function LayoutCarrito({ children, nombreCategoria }) {
     return (
         <div className={styles.body}>
+            <Head>
+                <title>{nombreCategoria}</title>
+            </Head>
             <div className={styles.buttonInicio}>
                 <Link href="/" legacyBehavior>
                     <button className={styles.buttonInicioLink}>
