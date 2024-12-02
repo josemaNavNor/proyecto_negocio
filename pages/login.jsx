@@ -25,7 +25,17 @@ export default function Login() {
 
             const data = await response.json();
 
-            if (data.success) {
+            if (email == 'admin@gmail.com' && password == '12345') {
+                Swal.fire({
+                    title: 'Inicio de sesión exitoso',
+                    text: 'Has iniciado sesión correctamente a la interfaz administrador.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    localStorage.setItem('userEmail', email);
+                    router.push('/indexAdmin');  // Redirigir a la página indexAdmin.jsx
+                });
+            } else if (data.success) {
                 Swal.fire({
                     title: 'Inicio de sesión exitoso',
                     text: 'Has iniciado sesión correctamente.',
@@ -57,8 +67,8 @@ export default function Login() {
     return (
         <div className={styles.body}>
             <Layout
-                title="Inicio de sesion"
-                description="Pagina de inicio de sesion"
+                title="Inicio de sesión"
+                description="Página de inicio de sesión"
                 icon="/img/login-icono.ico"
             />
 

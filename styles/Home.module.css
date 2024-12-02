@@ -77,6 +77,28 @@
   margin-bottom: 20px;
 }
 
+.suggestionList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 auto;
+  max-height: 150px;  /* Altura máxima de la lista */
+  overflow-y: auto;  /* Añade un scroll si la lista es muy larga */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  width: 70%;
+  z-index: 1000;
+}
+
+.suggestionItem {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestionItem:hover {
+  background-color: #f0f0f0;
+}
+
 .nav {
   background-color: #f1bdb7;
   text-decoration: none;

@@ -22,6 +22,8 @@ export default function Catalogo({ products }) {
   const [selectedProduct, setSelectedProduct] = useState(null);  // Estado para el producto seleccionado
   const [isModalOpen, setIsModalOpen] = useState(false);  // Estado para abrir/cerrar el modal
   const [userName, setUserName] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
     const fetchUserName = async (email) => {
@@ -52,6 +54,18 @@ export default function Catalogo({ products }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (searchTerm) {
+      setFilteredProducts(
+        products.filter(product =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredProducts([]);
+    }
+  }, [searchTerm, products]);
+
   const nextSlide = () => {
     setCurrentImage((prevIndex) => (prevIndex + 1) % images.length);
   };
@@ -70,7 +84,7 @@ export default function Catalogo({ products }) {
   };
 
   const getCategoryName = (category_id) => {
-    switch(category_id) {
+    switch (category_id) {
       case 1: return 'Invitaciones';
       case 2: return 'Souvenirs';
       case 3: return 'Papeleria';
@@ -85,7 +99,7 @@ export default function Catalogo({ products }) {
       <Layout
         title="Catálogo"
         description="Página principal del catálogo"
-        icon="/img/icon.ico" // Cambia esta ruta si es necesario
+        icon="/img/icon.ico"
       />
       <div className={styles.info}>
         {userName ? (
@@ -126,7 +140,15 @@ export default function Catalogo({ products }) {
       </div>
       <div className={styles.search}>
         <form action=''>
-          <input className={styles.inputText} type="text" name="buscar" id="buscar" placeholder='Buscar en el catalogo' />
+          <input
+            className={styles.inputText}
+            type="text"
+            name="buscar"
+            id="buscar"
+            placeholder='Buscar en el catálogo'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
           <button type="submit" className={styles.buttonSearch} aria-label="Buscar">
             <Image
               src="/img/buscar.png"
@@ -137,7 +159,21 @@ export default function Catalogo({ products }) {
             />
           </button>
         </form>
+        {searchTerm && (
+          <ul className={styles.suggestionList}>
+            {filteredProducts.map((product) => (
+              <li
+                key={product.product_id}
+                onClick={() => window.location.href = `/${product.product_id}`}
+                className={styles.suggestionItem}
+              >
+                {product.name}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
+
       {/* Sección del carrusel */}
       <div className={styles.carouselContainer}>
         <div className={styles.carousel}>

@@ -1,34 +1,34 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import LayoutCarrito from '../components/layout-carrito'; 
-import Image from "next/image";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import styles from "../styles/Login.module.css";
-import Swal from 'sweetalert2';
-import { query } from '../lib/db';
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import LayoutCarrito from '../components/layout-carrito'
+import Image from "next/image"
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js"
+import styles from "../styles/Login.module.css"
+import Swal from 'sweetalert2'
+import { query } from '../lib/db'
 
 export async function getStaticProps() {
-    const products = await query('SELECT name, category_id FROM product');
-  
+    const products = await query('SELECT name, category_id FROM product')
+
     return {
-      props: {
-        products: JSON.parse(JSON.stringify(products)),
-      },
-    };
+        props: {
+            products: JSON.parse(JSON.stringify(products)),
+        },
+    }
 }
 
 export default function Carrito({ products }) {
-    const [isRegistered, setIsRegistered] = useState(false);
-    const [cartItems, setCartItems] = useState([]);
-    const [totalAmount, setTotalAmount] = useState(0);  // Añadir estado para el total
-    const router = useRouter();
+    const [isRegistered, setIsRegistered] = useState(false)
+    const [cartItems, setCartItems] = useState([])
+    const [totalAmount, setTotalAmount] = useState(0)
+    const router = useRouter()
 
     useEffect(() => {
         const checkUser = async () => {
-            const email = localStorage.getItem('userEmail');
+            const email = localStorage.getItem('userEmail')
             if (!email) {
-                router.push('/login');
-                return;
+                router.push('/login')
+                return
             }
 
             try {
@@ -38,87 +38,87 @@ export default function Carrito({ products }) {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ email }),
-                });
+                })
 
-                const data = await response.json();
+                const data = await response.json()
 
                 if (data.registered) {
-                    setIsRegistered(true);
+                    setIsRegistered(true)
                 } else {
-                    router.push('/login');
+                    router.push('/login')
                 }
             } catch (error) {
-                console.error('Error al verificar el usuario:', error);
-                router.push('/login');
+                console.error('Error al verificar el usuario:', error)
+                router.push('/login')
             }
-        };
+        }
 
-        checkUser();
-    }, [router]);
+        checkUser()
+    }, [router])
 
     useEffect(() => {
         if (isRegistered) {
             const fetchCartItems = async () => {
-                const email = localStorage.getItem('userEmail');
+                const email = localStorage.getItem('userEmail')
 
                 try {
                     const response = await fetch(`/api/getCartItems?email=${encodeURIComponent(email)}`, {
-                        method: 'GET', // Cambiar a GET
+                        method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                    });
+                    })
 
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`HTTP error! status: ${response.status}`)
                     }
 
-                    const data = await response.json();
-                    setCartItems(data);
-                    updateTotalAmount(data);  // Actualizar total al cargar los ítems
+                    const data = await response.json()
+                    setCartItems(data)
+                    updateTotalAmount(data)
                 } catch (error) {
-                    console.error('Error al recuperar los productos del carrito:', error);
+                    console.error('Error al recuperar los productos del carrito:', error)
                 }
-            };
+            }
 
-            fetchCartItems();
+            fetchCartItems()
         }
-    }, [isRegistered]);
+    }, [isRegistered])
 
     const updateQuantity = (productId, newQuantity) => {
-        if (newQuantity < 1) return; // Asegurarnos de que la cantidad no sea negativa
+        if (newQuantity < 1) return
 
         const updatedCart = cartItems.map(item =>
             item.product_id === productId ? { ...item, cantidad: newQuantity } : item
-        );
-        setCartItems(updatedCart);
-        localStorage.setItem("cart", JSON.stringify(updatedCart));
-        updateTotalAmount(updatedCart);  // Actualizar total al cambiar cantidad
-    };
+        )
+        setCartItems(updatedCart)
+        localStorage.setItem("cart", JSON.stringify(updatedCart))
+        updateTotalAmount(updatedCart)
+    }
 
     const updateTotalAmount = (items) => {
         const total = items.reduce((sum, item) => {
-            const price = parseFloat(item.price);
-            const cantidad = parseInt(item.cantidad, 10);
-            return sum + (price * cantidad);
-        }, 0).toFixed(2);
-        setTotalAmount(total);
-    };
+            const price = parseFloat(item.price)
+            const cantidad = parseInt(item.cantidad, 10)
+            return sum + (price * cantidad)
+        }, 0).toFixed(2)
+        setTotalAmount(total)
+    }
 
     const getCategoryName = (category_id) => {
-        switch(category_id) {
-          case 1: return 'Invitaciones';
-          case 2: return 'Souvenirs';
-          case 3: return 'Papeleria';
-          case 4: return 'Creativa';
-          case 5: return 'Recuerdos';
-          default: return 'Invitaciones';
+        switch (category_id) {
+            case 1: return 'Invitaciones'
+            case 2: return 'Souvenirs'
+            case 3: return 'Papeleria'
+            case 4: return 'Creativa'
+            case 5: return 'Recuerdos'
+            default: return 'Invitaciones'
         }
-    };
+    }
 
     const removeItem = async (productId) => {
         try {
-            const email = localStorage.getItem('userEmail');
+            const email = localStorage.getItem('userEmail')
 
             const response = await fetch('/api/removeFromCart', {
                 method: 'DELETE',
@@ -126,36 +126,92 @@ export default function Carrito({ products }) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, productId }),
-            });
+            })
 
             if (response.ok) {
-                const updatedCart = cartItems.filter(item => item.product_id !== productId);
-                setCartItems(updatedCart);
-                localStorage.setItem("cart", JSON.stringify(updatedCart));
-                updateTotalAmount(updatedCart);  // Actualizar total al eliminar ítem
+                const updatedCart = cartItems.filter(item => item.product_id !== productId)
+                setCartItems(updatedCart)
+                localStorage.setItem("cart", JSON.stringify(updatedCart))
+                updateTotalAmount(updatedCart)
                 Swal.fire({
                     icon: 'success',
                     title: 'Producto eliminado',
                     text: 'El producto ha sido eliminado del carrito.',
-                });
+                })
             } else {
-                const data = await response.json();
-                console.error('Error al eliminar el producto del carrito:', data);
+                const data = await response.json()
+                console.error('Error al eliminar el producto del carrito:', data)
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     text: data.message || 'Hubo un problema al eliminar el producto del carrito.',
-                });
+                })
             }
         } catch (error) {
-            console.error('Error al eliminar el producto del carrito:', error);
+            console.error('Error al eliminar el producto del carrito:', error)
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Hubo un problema al eliminar el producto del carrito.',
-            });
+            })
         }
-    };
+    }
+
+    const handlePaymentSuccess = async (details) => {
+        const email = localStorage.getItem('userEmail')
+
+        try {
+            const response = await fetch('/api/registrarOrden', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, cartItems, totalAmount }),
+            })
+
+            if (response.ok) {
+                const updateInventoryResponse = await fetch('/api/updateInventory', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ cartItems }),
+                })
+
+                if (updateInventoryResponse.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Pago completado!',
+                        text: 'Tu compra ha sido realizada exitosamente.',
+                    })
+                    console.log('Transaction completed by', details.payer.name.given_name)
+                } else {
+                    const data = await updateInventoryResponse.json()
+                    console.error('Error al actualizar la existencia:', data)
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message || 'Hubo un problema al actualizar la existencia.',
+                    })
+                }
+            } else {
+                const data = await response.json()
+                console.error('Error al registrar la orden:', data)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Hubo un problema al registrar la orden.',
+                })
+            }
+        } catch (error) {
+            console.error('Error al manejar el pago:', error)
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al manejar el pago.',
+            })
+        }
+    }
 
     if (!isRegistered) {
         return (
@@ -164,7 +220,7 @@ export default function Carrito({ products }) {
                     <h2>Necesitas iniciar sesión primero.</h2>
                 </div>
             </LayoutCarrito>
-        );
+        )
     }
 
     return (
@@ -203,13 +259,23 @@ export default function Carrito({ products }) {
                                     });
                                 }}
                                 onApprove={(data, actions) => {
-                                    return actions.order.capture().then(details => {
-                                        console.log('Transaction completed by', details.payer.name.given_name);
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: '¡Pago completado!',
-                                            text: 'Tu compra ha sido realizada exitosamente.',
-                                        });
+                                    return actions.order.capture().then(async (details) => {
+                                        try {
+                                            await handlePaymentSuccess(details);
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: '¡Pago completado!',
+                                                text: 'Tu compra ha sido realizada exitosamente.',
+                                            });
+                                            console.log('Transaction completed by', details.payer.name.given_name);
+                                        } catch (error) {
+                                            console.error('Error al manejar el pago:', error);
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: 'Hubo un problema al registrar la orden.',
+                                            });
+                                        }
                                     });
                                 }}
                             />
@@ -222,5 +288,5 @@ export default function Carrito({ products }) {
                 )}
             </div>
         </LayoutCarrito>
-    );
+    )
 }
