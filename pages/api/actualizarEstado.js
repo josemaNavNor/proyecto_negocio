@@ -1,7 +1,7 @@
 import { query } from '../../lib/db';
 
 export default async function handler(req, res) {
-    if (req.method === 'POST') {
+    if (req.method === 'PUT') {
         const { orderId, newStatusId } = req.body;
 
         try {

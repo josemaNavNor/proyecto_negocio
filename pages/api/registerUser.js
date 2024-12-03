@@ -1,18 +1,19 @@
-// pages/api/register.js
+import bcrypt from 'bcrypt';
 import { query } from '../../lib/db';
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
-        const { username, email, password, city, country, phone_number } = req.body;
+        const { email, password, username, city, country, phone_number } = req.body;
 
         try {
-            // Inserta los datos del usuario en la base de datos
-            await query('INSERT INTO customer (username, email, password, city, country, phone_number) VALUES (?, ?, ?, ?, ?, ?)', [username, email, password, city, country, phone_number]);
+            const hashedPassword = await bcrypt.hash(password, 10);
 
-            res.status(200).json({ message: 'Usuario registrado exitosamente' });
+            await query('INSERT INTO customer (email, password, username, city, country, phone_number) VALUES (?, ?, ?, ?, ?, ?)', [email, hashedPassword, username, city, country, phone_number]);
+
+            res.status(201).json({ success: true });
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Error en el registro del usuario' });
+            console.error('Error al registrar el usuario:', error);
+            res.status(500).json({ success: false, message: 'Error al registrar el usuario. Por favor, intente de nuevo.' });
         }
     } else {
         res.status(405).json({ message: 'Método no permitido' });
