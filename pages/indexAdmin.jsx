@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../styles/Admin.module.css';
+import Layout from '../components/layout-header';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import Swal from 'sweetalert2';
 
 export default function IndexAdmin() {
     const [orders, setOrders] = useState([]);
@@ -22,8 +24,49 @@ export default function IndexAdmin() {
         fetchOrders();
     }, []);
 
+    const handleStatusChange = async (orderId) => {
+        try {
+            const response = await fetch(`/api/actualizarEstado`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ orderId, newStatusId: 3 }) // 2 representando el ID del estado "Enviado"
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    title: 'Estado actualizado',
+                    text: 'La orden ha sido marcada como enviada.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                });
+
+                // Actualizar el estado local de las órdenes
+                setOrders(prevOrders => prevOrders.map(order =>
+                    order.order_id === orderId ? { ...order, status: 'Enviado' } : order
+                ));
+            } else {
+                throw new Error('Error al actualizar el estado de la orden');
+            }
+        } catch (error) {
+            console.error('Error al actualizar el estado de la orden:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'No se pudo actualizar el estado de la orden. Intenta nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+    };
+
     return (
         <div className={styles.body}>
+            <Layout
+                title="Inicio Administrador"
+                description="Inicio del administrador"
+                icon="/img/icono-invitacion.ico"
+            />
             <h2>Interfaz de administrador</h2>
             <div className={styles.divImage}>
                 <Image

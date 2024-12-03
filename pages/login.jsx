@@ -25,7 +25,7 @@ export default function Login() {
 
             const data = await response.json();
 
-            if (email == 'admin@gmail.com' && password == '12345') {
+            if (email === 'admin@gmail.com' && password === '12345') {
                 Swal.fire({
                     title: 'Inicio de sesión exitoso',
                     text: 'Has iniciado sesión correctamente a la interfaz administrador.',

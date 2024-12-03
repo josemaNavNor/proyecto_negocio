@@ -231,7 +231,7 @@ export default function Carrito({ products }) {
                         {cartItems.map((item) => (
                             <div key={item.product_id} className={styles.cartItem}>
                                 <Image
-                                    src={`/img/${getCategoryName(item.category_id)}/${item.name}.png`}
+                                    src={`/img/${item.name}.png`}
                                     alt={item.name}
                                     width={100}
                                     height={100}

@@ -87,7 +87,7 @@ export default function IndexAdmin() {
                 </Link>
             </div>
             <div className={styles.nav}>
-                {['Usuarios', 'Productos', 'Categoría', 'Inventario'].map((item, index) => (
+                {['Usuarios', 'Productos', 'Categoria'].map((item, index) => (
                     <Link href={`/${item.toLowerCase()}`} key={index} className={styles.navItem}>
                         <strong>{item}</strong>
                     </Link>
