@@ -2,14 +2,14 @@ import { query } from '../../lib/db';
 
 export default async function handler(req, res) {
     if (req.method === 'PUT') {
-        const { customer_id, username, email, password, city, country, phone_number } = req.body;
+        const { customer_id, username, email, city, country, phone_number } = req.body;
 
         try {
             const result = await query(`
                 UPDATE customer
-                SET username = ?, email = ?, password = ?, city = ?, country = ?, phone_number = ?
+                SET username = ?, email = ?, city = ?, country = ?, phone_number = ?
                 WHERE customer_id = ?
-            `, [username, email, password, city, country, phone_number, customer_id]);
+            `, [username, email, city, country, phone_number, customer_id]);
 
             if (result.affectedRows === 0) {
                 return res.status(404).json({ error: 'Usuario no encontrado' });

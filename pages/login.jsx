@@ -6,6 +6,7 @@ import Image from "next/image";
 import styles from "../styles/Login.module.css";
 import Layout from '../components/layout-header';
 
+
 export default function Login() {
     const router = useRouter();
     const [email, setEmail] = useState('');
@@ -33,7 +34,8 @@ export default function Login() {
                     confirmButtonText: 'Aceptar'
                 }).then(() => {
                     localStorage.setItem('userEmail', email);
-                    router.push('/indexAdmin');  // Redirigir a la página indexAdmin.jsx
+                    localStorage.setItem('userPassword', password); // Guardar la contraseña
+                    router.push('/indexAdmin'); // Redirigir a la página indexAdmin.jsx
                 });
             } else if (data.success) {
                 Swal.fire({
@@ -43,7 +45,8 @@ export default function Login() {
                     confirmButtonText: 'Aceptar'
                 }).then(() => {
                     localStorage.setItem('userEmail', email);
-                    router.push('/');  // Redirigir a la página index.jsx
+                    localStorage.setItem('userPassword', password); // Guardar la contraseña
+                    router.push('/'); // Redirigir a la página index.jsx
                 });
             } else {
                 Swal.fire({
@@ -63,7 +66,7 @@ export default function Login() {
             });
         }
     };
-
+    
     return (
         <div className={styles.body}>
             <Layout

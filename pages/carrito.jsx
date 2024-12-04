@@ -18,17 +18,18 @@ export async function getStaticProps() {
 }
 
 export default function Carrito({ products }) {
-    const [isRegistered, setIsRegistered] = useState(false)
-    const [cartItems, setCartItems] = useState([])
-    const [totalAmount, setTotalAmount] = useState(0)
-    const router = useRouter()
+    const [isRegistered, setIsRegistered] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const router = useRouter();
 
     useEffect(() => {
         const checkUser = async () => {
-            const email = localStorage.getItem('userEmail')
-            if (!email) {
-                router.push('/login')
-                return
+            const email = localStorage.getItem('userEmail');
+            const password = localStorage.getItem('userPassword');
+            if (!email || !password) {
+                router.push('/login');
+                return;
             }
 
             try {
@@ -37,24 +38,24 @@ export default function Carrito({ products }) {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ email }),
-                })
+                    body: JSON.stringify({ email, password }),
+                });
 
-                const data = await response.json()
+                const data = await response.json();
 
-                if (data.registered) {
-                    setIsRegistered(true)
+                if (data.success) {
+                    setIsRegistered(true);
                 } else {
-                    router.push('/login')
+                    router.push('/login');
                 }
             } catch (error) {
-                console.error('Error al verificar el usuario:', error)
-                router.push('/login')
+                console.error('Error al verificar el usuario:', error);
+                router.push('/login');
             }
-        }
+        };
 
-        checkUser()
-    }, [router])
+        checkUser();
+    }, [router]);
 
     useEffect(() => {
         if (isRegistered) {
@@ -103,17 +104,6 @@ export default function Carrito({ products }) {
             return sum + (price * cantidad)
         }, 0).toFixed(2)
         setTotalAmount(total)
-    }
-
-    const getCategoryName = (category_id) => {
-        switch (category_id) {
-            case 1: return 'Invitaciones'
-            case 2: return 'Souvenirs'
-            case 3: return 'Papeleria'
-            case 4: return 'Creativa'
-            case 5: return 'Recuerdos'
-            default: return 'Invitaciones'
-        }
     }
 
     const removeItem = async (productId) => {
@@ -249,14 +239,44 @@ export default function Carrito({ products }) {
                         <PayPalScriptProvider options={{ "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}>
                             <PayPalButtons
                                 style={{ layout: 'vertical' }}
-                                createOrder={(data, actions) => {
-                                    return actions.order.create({
-                                        purchase_units: [{
-                                            amount: {
-                                                value: totalAmount,
-                                            },
-                                        }],
-                                    });
+                                createOrder={async (data, actions) => {
+                                    try {
+                                        // Llamada a la API para validar existencias
+                                        const response = await fetch('/api/checkStock', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ cartItems }),
+                                        });
+
+                                        const result = await response.json();
+
+                                        if (!response.ok) {
+                                            const issues = Object.entries(result.results || {})
+                                                .map(([id, issue]) => `Producto ID ${id}: ${issue}`)
+                                                .join('\n');
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error de existencias',
+                                                text: `No se puede proceder con el pago:\n${issues}`,
+                                            });
+                                            return Promise.reject(); // Detiene el flujo de creación de orden
+                                        }
+
+                                        // Continuar con la creación de la orden
+                                        return actions.order.create({
+                                            purchase_units: [{
+                                                amount: { value: totalAmount },
+                                            }],
+                                        });
+                                    } catch (error) {
+                                        console.error('Error al verificar existencias:', error);
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'No se pudo verificar las existencias. Intenta nuevamente más tarde.',
+                                        });
+                                        return Promise.reject(); // Detiene el flujo
+                                    }
                                 }}
                                 onApprove={(data, actions) => {
                                     return actions.order.capture().then(async (details) => {
@@ -267,7 +287,6 @@ export default function Carrito({ products }) {
                                                 title: '¡Pago completado!',
                                                 text: 'Tu compra ha sido realizada exitosamente.',
                                             });
-                                            console.log('Transaction completed by', details.payer.name.given_name);
                                         } catch (error) {
                                             console.error('Error al manejar el pago:', error);
                                             Swal.fire({

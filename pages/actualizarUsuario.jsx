@@ -12,7 +12,6 @@ export default function ActualizarUsuario() {
     const [formData, setFormData] = useState({
         username: '',
         email: '',
-        password: '',
         city: '',
         country: '',
         phone_number: ''
@@ -50,7 +49,6 @@ export default function ActualizarUsuario() {
             setFormData({
                 username: data.username || '',
                 email: data.email || '',
-                password: '',
                 city: data.city || '',
                 country: data.country || '',
                 phone_number: data.phone_number || ''
@@ -137,9 +135,6 @@ export default function ActualizarUsuario() {
                     </div>
                     <div className={styles.divInputCorreo}>
                         <input className={styles.inputCorreo} type="email" name="email" placeholder="Ingrese correo" required value={formData.email} onChange={handleChange} />
-                    </div>
-                    <div className={styles.divInputPass}>
-                        <input className={styles.inputPass} type="password" name="password" placeholder="Ingrese contraseña" value={formData.password} onChange={handleChange} />
                     </div>
                     <div className={styles.divInputCorreo}>
                         <input className={styles.inputCorreo} type="text" name="city" placeholder="Ingrese ciudad" required value={formData.city} onChange={handleChange} />

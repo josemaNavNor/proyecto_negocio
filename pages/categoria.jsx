@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import styles from '../styles/Admin.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
-import Layout from '../components/layout-header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos adicionales
 import Swal from 'sweetalert2';
+import Head from 'next/head';
+
 
 
 export default function IndexAdmin() {
@@ -71,6 +72,9 @@ export default function IndexAdmin() {
 
     return (
         <div className={styles.body}>
+            <Head>
+                <title>Gestión categoria</title>
+            </Head>
             <h2>Interfaz de administrador</h2>
             <div className={styles.divImage}>
                 <Link href="/indexAdmin">
@@ -120,7 +124,7 @@ export default function IndexAdmin() {
                                     <FontAwesomeIcon
                                         icon={faTrashAlt}
                                         style={{ cursor: 'pointer' }}
-                                        onClick={() => handleDelete(order.category_id)} // Corregimos el uso de orders.product_id a order.product_id
+                                        onClick={() => handleDelete(order.category_id)} 
                                     />
                                 </td>
                             </tr>
